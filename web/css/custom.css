@@ -1,0 +1,22 @@
+.intro {
+	width: 100%;
+	min-height: 300px;
+	position: relative;
+}
+
+.intro .content {
+	position: absolute;
+	width: 100%;
+	text-align: center;
+	transform: translateY(-50%);
+	top: 50%;
+}
+
+.login-btn a {
+	border: 1px solid #e3e3e3;
+    min-width: 100px;
+    text-align: center;
+    border-radius: 8px;
+    background-color: #3cbc8b;
+    color: #fff !important;
+}

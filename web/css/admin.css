@@ -1,0 +1,46 @@
+.grid-view th > a, .grid-view td > a, .breadcrumb-item > a {
+    color: #3cbc8b;
+}
+
+.breadcrumb {
+    justify-content: flex-end;
+}
+
+.form-group .help-block {
+    color: #FC5185;
+}
+
+.avatar {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+}
+
+.avatar.lg {
+    width: 100px;
+    height: 100px;
+}
+
+.form-control {
+    height: auto;
+}
+
+.page-content {
+    background-color: #fff;
+    padding: 15px;
+    color: #000;
+}
+
+.dark-mode .page-item .page-link {
+    color: #fff;
+}
+
+.dark-mode .page-item.active .page-link {
+    background-color: #3cbc8b;
+    border-color: #3cbc8b;
+    color: #fff;
+}
+
+small a {
+    color: #3cbc8b;
+}
