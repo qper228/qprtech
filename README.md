@@ -44,7 +44,12 @@ INSTALLATION
 If you do not have [Docker](https://www.docker.com/get-started/), you may install it by following the instructions
 at [docker.com](https://www.docker.com/get-started/).
 
-After you pulled all files from the repository, start container within your working directory:
+Clone files from the repository:
+```shell
+git clone https://github.com/qper228/qprtech.git
+```
+
+Start container within your working directory:
 ~~~
 make start
 ~~~

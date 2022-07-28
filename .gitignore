@@ -32,5 +32,4 @@ tests/_support/_generated
 #vagrant folder
 /.vagrant
 
-/docker/mysql
-/web/pages
+/docker/mysql/
