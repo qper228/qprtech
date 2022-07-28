@@ -83,5 +83,5 @@ You can render built-in components on your page content. Here is a list of all a
 **NOTES:**
 - Probably you might need to set up permissions for the container:
 ```shell
-sudo chown -R www-data:www-data ./web
+sudo chown -R www-data:www-data ./web runtime
 ```
