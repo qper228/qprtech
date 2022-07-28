@@ -85,3 +85,10 @@ You can render built-in components on your page content. Here is a list of all a
 ```shell
 sudo chown -R www-data:www-data ./web runtime
 ```
+
+### Login to the admin
+You can login to the admin by following credentials
+```shell
+Email: admin@example.com
+Password: Qweqwe123
+```
