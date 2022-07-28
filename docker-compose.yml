@@ -25,6 +25,7 @@ services:
       - db
   db:
     image: mysql:5.7
+    platform: linux/x86_64
     restart: always
     environment:
       - MYSQL_DATABASE=${MYSQL_DATABASE}
