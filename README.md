@@ -7,7 +7,7 @@
 </p>
 
 [Yii 2](http://www.yiiframework.com/) Based CMS is a good-to-go ground for you future website in Docker container. It contains the most 
-common core features required for web-site building. Compatible with SEO and multiple languages. 
+common core features required for the web-site building. Compatible with SEO and multiple languages. 
 
 Out-the-box website contains the basic example features including admin user login/logout, contact page and blog.
 
