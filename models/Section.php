@@ -96,7 +96,10 @@ class Section extends \yii\db\ActiveRecord
     }
 
     public function getPages() {
-        return Page::find()->where(['sectionId' => $this->id])->orderBy(['orderNumber' => SORT_ASC]);
+        return Page::find()->where([
+            'sectionId' => $this->id,
+            'isHidden' => false
+        ])->orderBy(['orderNumber' => SORT_ASC]);
     }
 
     private static function getLinks($languageId, $position) {
@@ -104,7 +107,7 @@ class Section extends \yii\db\ActiveRecord
             'languageId' => $languageId,
             'position' => $position,
             'isActive' => true
-        ])->orderBy(['position' => SORT_ASC])->all(), [
+        ])->orderBy(['orderNumber' => SORT_ASC])->all(), [
             'app\models\Section' => [
                 'label' => 'label',
                 'options' => function ($section) {
