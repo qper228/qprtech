@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Sunrise\Slugger\Slugger;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "page".
@@ -64,6 +65,6 @@ class Page extends AbstractContentModel {
             $slugger = new Slugger();
             $this->slug = $slugger->slugify($this->title);
         }
-        return parent::beforeSave($insert);
+        return ActiveRecord::beforeSave($insert);
     }
 }
