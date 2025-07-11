@@ -1,22 +1,25 @@
-PROJECT=cms
+COMPOSE=docker-compose -f compose/docker-compose.yml
+PROJECT=yii2_app
 
 .PHONY: start
 start:
-	@docker-compose -p $(PROJECT) up -d
-	@docker exec -it cms_php_1 composer install
+	@$(COMPOSE) -p $(PROJECT) up -d
 
 .PHONY: stop
 stop:
-	@docker-compose -p $(PROJECT) stop
+	@$(COMPOSE) -p $(PROJECT) down
 
 .PHONY: rebuild
 rebuild:
-	@docker-compose -p $(PROJECT) down
-	@docker-compose -p $(PROJECT) pull --include-deps
-	@docker-compose -p $(PROJECT) build
+	@$(COMPOSE) -p $(PROJECT) down -v
+	@$(COMPOSE) -p $(PROJECT) build --no-cache
 
-.PHONY: remove
-remove:
-	@docker rm $(PROJECT)_db_1
-	@docker rm $(PROJECT)_php_1
-	@docker rm $(PROJECT)_phpmyadmin_1
+
+.PHONY: migrate
+migrate:
+	docker exec -it $(PROJECT)-dev-1 php yii migrate --interactive=0
+
+
+.PHONY: app
+app:
+	docker exec -it $(PROJECT)-dev-1 bash

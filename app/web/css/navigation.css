@@ -1,0 +1,98 @@
+.navigation-mobile-drawer {
+    position: fixed;
+    top: 0;
+    left: -999px;
+    height: 100%;
+    background-color: #f0f0f0;
+    transition: left 0.3s ease;
+    z-index: 100;
+    width: 211px;
+}
+.navigation-mobile {
+    display: flex;
+    position: fixed;
+    z-index: 99;
+    width: 100%;
+    flex-direction: row;
+    background-color: #fff;
+    padding: 8px;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.navigation-mobile .pull-right {
+    margin-left: auto;
+}
+.navigation-mobile .brand-label {
+    margin: 0 8px;
+}
+.navigation-mobile-drawer.open {
+    left: 0;
+}
+.navigation-mobile-drawer .nav {
+    flex-direction: column;
+}
+.navigation-mobile-drawer .nav-link {
+    color: #0e326d;
+}
+.navigation-mobile-drawer-label {
+    display: flex;
+    justify-content: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #d9d9d9;
+    margin-bottom: 16px;
+}
+.navigation-mobile-drawer-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.navigation-mobile-drawer-footer {
+    padding: 8px 0;
+    border-top: 1px solid #d9d9d9;
+    text-align: center;
+}
+.navigation-mobile-drawer-footer .contacts, .navigation-mobile-drawer-footer .socials {
+    font-size: 12px;
+    text-align: center;
+}
+.navigation-mobile-drawer-footer .contacts a, .navigation-mobile-drawer-footer .socials a {
+    color: #0e326d;
+    margin: 0;
+}
+.navigation-mobile-drawer-footer .socials {
+    display: flex;
+    padding: 8px;
+    justify-content: space-between;
+}
+.navigation-mobile-drawer-footer small {
+    color: #a9a9a9;
+    font-size: 12px;
+}
+#drawer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 99;
+}
+
+@media(max-width:767px) {
+    button.navbar-toggler {
+        display: none;
+    }
+    .options {
+        display: none;
+    }
+}
+
+@media(min-width:768px) {
+    .navigation-mobile {
+        display: none;
+    }
+    .navigation-mobile-drawer {
+        display: none;
+    }
+}
