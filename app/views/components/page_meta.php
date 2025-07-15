@@ -28,8 +28,8 @@ if ($model->keywords) {
     $this->registerMetaTag(['name' => 'keywords', 'content' => $model->keywords]);
 }
 if ($model->image) {
-    $this->registerMetaTag(['property' => 'og:image', 'content' => Url::to('@web'.$model->image, true)]);
-    $this->registerMetaTag(['name' => 'twitter:image', 'content' => Url::to('@web'.$model->image, true)]);
+    $this->registerMetaTag(['property' => 'og:image', 'content' => Url::to('@web'.$model->image, 'https')]);
+    $this->registerMetaTag(['name' => 'twitter:image', 'content' => Url::to('@web'.$model->image, 'https')]);
 }
 
 $this->registerMetaTag(['name' => 'robots', 'content' => $index . ', ' . $follow]);

@@ -103,7 +103,8 @@ class SiteController extends Controller {
             ->limit(3)
             ->all();
         $editorsPosts = Post::find()
-            ->orderBy(['isEditorsPick' => SORT_DESC])
+            ->where(['isEditorsPick' => true])
+            ->orderBy(['views' => SORT_DESC])
             ->limit(3)
             ->all();
         $featuredPath = Yii::getAlias('@webroot/img/featured');
@@ -368,7 +369,6 @@ class SiteController extends Controller {
         ];
 
         if ($page !== null) {
-            $context['ogTags'] = $this->getOgTags($page->getOgTags());
             $context['title'] = $page->title;
             $context['pageTitle'] = $page->shortTitle;
             $context['content'] = $page->renderContent();
