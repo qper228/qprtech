@@ -68,20 +68,24 @@ abstract class AbstractContentModel extends AbstractImageModel
         return $this->hasOne(Language::class, ['id' => 'languageId']);
     }
 
-    public function renderContent($content = null){
-        if (!$content) {
-            $content = $this->content;
-        }
+    public function renderContent($content = null)
+    {
+        // normalize to string (avoid notices if null)
+        $content = (string)($content ?? $this->content ?? '');
+
         $replace = [
-            'leadForm' => Yii::$app->controller->renderPartial('@app/views/components/lead_form'),
+            'leadForm'    => Yii::$app->controller->renderPartial('@app/views/components/lead_form'),
             'contactForm' => Yii::$app->controller->renderPartial('@app/views/components/contact_form'),
-            'websiteName' => Yii::$app->params['websiteName']
+            'websiteName' => Yii::$app->params['websiteName'],
         ];
+
+        // Build the exact placeholders and replace in one pass
+        $map = [];
         foreach ($replace as $k => $v) {
-            $var = '{{ '.$k.' }}';
-            if (str_contains($content, $var)) $content = str_replace($var, $v, $content);
+            $map['{{ ' . $k . ' }}'] = $v;
         }
-        return $content;
+
+        return \strtr($content, $map); // \strtr is available in 7.4
     }
 
     public function getSlugAttribute() {
