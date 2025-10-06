@@ -17,7 +17,7 @@ class BlogCategorySearch extends BlogCategory
     public function rules()
     {
         return [
-            [['id'], 'integer'],
+            [['id', 'languageId'], 'integer'],
             [['label', 'slug'], 'safe'],
         ];
     }
@@ -59,10 +59,12 @@ class BlogCategorySearch extends BlogCategory
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
+            'languageId' => $this->languageId,
         ]);
 
         $query->andFilterWhere(['like', 'label', $this->label])
             ->andFilterWhere(['like', 'slug', $this->slug]);
+
 
         return $dataProvider;
     }

@@ -33,3 +33,6 @@ tests/_support/_generated
 /.vagrant
 
 /docker/mysql/
+
+app.db
+/modules/admin/password.txt

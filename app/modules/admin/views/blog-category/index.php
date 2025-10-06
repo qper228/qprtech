@@ -1,6 +1,7 @@
 <?php
 
 use app\models\db\BlogCategory;
+use app\models\db\Language;
 use app\models\search\BlogCategorySearch;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -21,6 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    <?= $this->render('@app/modules/admin/views/_partials/_alerts'); ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -30,6 +32,16 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'label',
             'slug',
+            [
+                'label' => 'Language',
+                'value' => function ($data) {
+                    if ($data->language) return $data->language->icon('4x3');
+                    return '-';
+                },
+                'attribute' => 'languageId',
+                'filter' => Language::getList(),
+                'format' => 'html'
+            ],
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, BlogCategory $model, $key, $index, $column) {

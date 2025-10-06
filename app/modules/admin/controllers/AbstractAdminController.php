@@ -7,6 +7,7 @@ use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use Yii;
 
 abstract class AbstractAdminController extends Controller
 {
@@ -74,7 +75,8 @@ abstract class AbstractAdminController extends Controller
                 $model->validate() &&
                 $model->save()
             ) {
-                return $this->redirect(['view', 'id' => $model->id]);
+                Yii::$app->session->setFlash('recordCreated');
+                return $this->actionIndex();
             }
         } else {
             $model->loadDefaultValues();
@@ -95,7 +97,8 @@ abstract class AbstractAdminController extends Controller
             $model->validate() &&
             $model->save()
         ) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            Yii::$app->session->setFlash('recordUpdated');
+            return $this->actionIndex();
         }
 
         return $this->render('update', [

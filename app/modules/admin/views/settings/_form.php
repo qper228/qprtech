@@ -35,12 +35,18 @@ if (!$model->themeId) $model->themeId = '';
                     ]); ?>
                 </div>
             </div>
-            <?= $form->field($model, 'headScript')->widget(Codemirror::class, [
-                'useKrajeePresets' => true,
-            ]); ?>
-            <?= $form->field($model, 'bodyScript')->widget(Codemirror::class, [
-                'useKrajeePresets' => true,
-            ]); ?>
+            <div class="row">
+                <div class="col-md-6">
+                    <?= $form->field($model, 'headScript')->widget(Codemirror::class, [
+                        'useKrajeePresets' => true,
+                    ]); ?>
+                </div>
+                <div class="col-md-6">
+                    <?= $form->field($model, 'bodyScript')->widget(Codemirror::class, [
+                        'useKrajeePresets' => true,
+                    ]); ?>
+                </div>
+            </div>
         </div>
         <div class="col-md-3">
             <?= $form->field($model, 'siteName')->textInput(['maxlength' => true]) ?>

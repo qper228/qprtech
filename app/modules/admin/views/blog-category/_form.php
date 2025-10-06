@@ -1,23 +1,26 @@
 <?php
-
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use app\models\db\BlogCategory;
+use app\models\db\Language;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\db\BlogCategory */
-/* @var $form yii\widgets\ActiveForm */
+/* @var $model \app\models\db\Post */
+
+$form = ActiveForm::begin();
 ?>
 
-<div class="blog-category-form">
+<div class="post-form">
+    <?=
+    $this->render('@app/modules/admin/views/_partials/_content_fields', [
+        'form' => $form,
+        'model' => $model,
+    ]);
+    ?>
 
-    <?php $form = ActiveForm::begin(); ?>
-
-    <?= $form->field($model, 'label')->textInput(['maxlength' => true]) ?>
-
-    <div class="form-group">
+    <div class="form-group text-right">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>
-
-    <?php ActiveForm::end(); ?>
-
 </div>
+
+<?php ActiveForm::end(); ?>

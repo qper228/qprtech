@@ -48,8 +48,11 @@ class Post extends AbstractContentModel {
 
     public function getCategory()
     {
-        return $this->hasOne(BlogCategory::class, ['id' => 'categoryId']);
+        return $this->hasOne(BlogCategory::class, ['id' => 'categoryId'])
+            ->alias('bc')        // <- fixed alias for blog_categories
+            ->inverseOf('posts'); // optional if you add hasMany on BlogCategory
     }
+
 
     public static function getCategories() {
         $items = BlogCategory::getList();

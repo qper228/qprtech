@@ -10,9 +10,10 @@
 /** @var $contentBottom */
 /** @var $models */
 /** @var $pagination */
+/** @var $currentCategory */
 
 echo $this->render('@app/views/components/page_meta', [
-    'model' => $model,
+    'model' => $currentCategory ?? $model,
     'contentType' => 'article'
 ])
 

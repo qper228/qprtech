@@ -13,23 +13,20 @@ use app\models\db\Video;
 use app\models\forms\ContactForm;
 use app\models\forms\LeadForm;
 use app\models\forms\LoginForm;
-use app\models\search\PostSearch;
-use app\models\search\VideoSearch;
 use app\widgets\Contacts;
 use app\widgets\Copyright;
 use app\widgets\Socials;
-use GuzzleHttp\Client;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\bootstrap4\ButtonDropdown;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
-use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use app\models\abstractions\AbstractContentModel;
 
 
 class SiteController extends Controller {
@@ -131,10 +128,12 @@ class SiteController extends Controller {
 
     public function actionBlog($category='', $search = '', $orderBy='createdAt') {
         $query = Post::find()->orderBy([$orderBy => SORT_DESC]);
+        $currentCategory = null;
         if ($category) {
+            $currentCategory = BlogCategory::findOne(['slug' => $category]);
             $query
                 ->joinWith('category')
-                ->andFilterWhere(['blog_categories.slug' => $category]);
+                ->andFilterWhere(['bc.slug' => $category]);
         }
         if ($search) {
             $query->andWhere(['or',
@@ -154,16 +153,17 @@ class SiteController extends Controller {
         $models = $dataProvider->getModels();
 
         $page = Page::findOne(['isBlogPage' => true]);
-        $categories = BlogCategory::find()->all();
+        $categories = BlogCategory::find()->orderBy('orderNumber')->all();
         $context = array_merge(
-            $this->getPageContext($page),
+            $this->getPageContext($currentCategory ?? $page),
             [
                 'models' => $models,
                 'categories' => $categories,
                 'pagination' => $pagination,
                 'categorySlug' => $category,
                 'orderBy' => $orderBy,
-                'model' => $page
+                'model' => $page,
+                'currentCategory' => $currentCategory
             ]
         );
         if (Yii::$app->request->isPjax) {
@@ -358,26 +358,38 @@ class SiteController extends Controller {
         return $this->renderPartial('@app/views/layouts/_og', $tags);
     }
 
-    private function getPageContext(?Page $page) {
-        $context = [
-            'ogTags' => '',
-            'title' => ucfirst($this->action->id),
-            'pageTitle' => '',
-            'content' => '',
-            'headScript' => '',
-            'bodyScript' => ''
+    private function getPageContext(?AbstractContentModel $model, ?string $fallbackTitle = null): array
+    {
+        $ctx = [
+            'ogTags'       => [],
+            'title'        => $fallbackTitle ?? ucfirst($this->action->id),
+            'pageTitle'    => '',
+            'content'      => '',
+            'contentBottom'=> '',
+            'headScript'   => '',
+            'bodyScript'   => '',
         ];
 
-        if ($page !== null) {
-            $context['title'] = $page->title;
-            $context['pageTitle'] = $page->shortTitle;
-            $context['content'] = $page->renderContent();
-            $context['contentBottom'] = $page->renderContent($page->contentBottom);
-            $context['headScript'] = $page->headScript;
-            $context['bodyScript'] = $page->bodyScript;
+        if ($model === null) {
+            return $ctx;
         }
 
-        return $context;
+        // Prefer metaTitle for <title>, fallback to title
+        $ctx['title']      = $model->metaTitle ?: $model->title;
+        // shortTitle/contentBottom exist on Page & BlogCategory (safe-guard anyway)
+        $ctx['pageTitle']  = $model->canGetProperty('shortTitle') ? (string)($model->shortTitle ?? '') : '';
+        $ctx['content']    = $model->renderContent();
+        if (isset($model->contentBottom)) {
+            $ctx['contentBottom'] = $model->renderContent($model->contentBottom);
+        }
+
+        $ctx['headScript'] = $model->headScript;
+        $ctx['bodyScript'] = $model->bodyScript;
+
+        // Reuse your model helper
+        $ctx['ogTags']     = $model->getOgTags();
+
+        return $ctx;
     }
 
     private function getDirectoryContents($directoryPath)

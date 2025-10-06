@@ -22,6 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    <?= $this->render('@app/modules/admin/views/_partials/_alerts'); ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,

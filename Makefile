@@ -1,5 +1,5 @@
 COMPOSE=docker-compose -f compose/docker-compose.yml
-PROJECT=yii2_app
+PROJECT=qprtech
 
 .PHONY: start
 start:
