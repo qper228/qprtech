@@ -27,9 +27,9 @@ class AppAsset extends AssetBundle
     public $css = [
         'https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css',
         'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css',
-        '@web/css/site.css',
-        '@web/css/custom.css',
-		'@web/css/navigation.css',
+        'css/site.css',
+        'css/custom.css',
+		'css/navigation.css',
     ];
     public $js = [
         'https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js',
