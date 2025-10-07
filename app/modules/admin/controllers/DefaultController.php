@@ -45,18 +45,34 @@ class DefaultController extends Controller
         return $this->render('index');
     }
 
-    public function actionCss() {
+    public function actionCss()
+    {
         $model = new CssForm();
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->write()) {
-                Yii::$app->getSession()->setFlash('update', 'File was successfully updated!');
-                return $this->refresh();
+
+        if (Yii::$app->request->isPost) {
+            if ($model->load(Yii::$app->request->post())) {
+                if ($model->validate()) {
+                    if ($model->write()) {
+                        Yii::$app->session->setFlash('success', '✅ File was successfully updated!');
+                        return $this->refresh();
+                    } else {
+                        // Write() failed — show its collected errors
+                        $errorText = implode("\n", $model->getErrorSummary(true));
+                        Yii::$app->session->setFlash('error', "❌ Failed to write file:\n" . $errorText);
+                    }
+                } else {
+                    // Validation failed
+                    $errorText = implode("\n", $model->getErrorSummary(true));
+                    Yii::$app->session->setFlash('error', "⚠️ Validation failed:\n" . $errorText);
+                }
             }
         }
+
         return $this->render('file', [
-            'model' => $model
+            'model' => $model,
         ]);
     }
+
 
     public function actionRobots() {
         $model = new RobotsForm();

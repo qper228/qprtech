@@ -21,6 +21,7 @@ $this->title = 'Edit file';
             'body' => Yii::$app->session->getFlash('update'),
         ]);
     }?>
+    <?= $this->render('@app/modules/admin/views/_partials/_alerts'); ?>
 
     <?php $form = ActiveForm::begin(); ?>
 

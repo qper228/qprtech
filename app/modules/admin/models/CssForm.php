@@ -2,9 +2,7 @@
 
 namespace app\modules\admin\models;
 
-
 class CssForm extends FileForm
 {
-    protected $path = '/web/css/custom.css';
-
+    protected $path = '@app/web/css/custom.css';
 }
