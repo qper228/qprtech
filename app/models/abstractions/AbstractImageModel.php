@@ -26,39 +26,37 @@ abstract class AbstractImageModel extends ActiveRecord {
 
     public function beforeSave($insert)
     {
-        // call parent first, and abort if it fails
         if (!parent::beforeSave($insert)) {
             return false;
         }
 
-        // Only pick up a file bound to THIS model (e.g. Post[file])
-        /** @var UploadedFile|null $uploaded */
-        $uploaded = UploadedFile::getInstance($this, 'file');
+        // Prefer an explicitly attached file (controller), else model-scoped field (Post[file])
+        $uploaded = ($this->file instanceof UploadedFile)
+            ? $this->file
+            : UploadedFile::getInstance($this, 'file');
 
-        // If no real upload for this model, do nothing
+        // Only proceed for a real successful upload
         if (!$uploaded || $uploaded->error !== UPLOAD_ERR_OK || (int)$uploaded->size === 0) {
-            return true;
+            return true; // no upload for THIS model
         }
 
-        // Prepare filesystem dir under webroot
-        $dir = Yii::getAlias('@webroot/' . trim($this->path, '/')); // e.g. web/img/categories
+        // Build absolute dir under webroot and ensure it exists
+        $dir = \Yii::getAlias('@webroot/' . trim($this->path, '/')); // e.g. web/img/posts
         FileHelper::createDirectory($dir, 0775, true);
 
-        // Generate a safe unique filename
+        // Unique, safe filename
         $base = preg_replace('/[^a-z0-9_-]+/i', '-', pathinfo($uploaded->baseName, PATHINFO_FILENAME)) ?: 'image';
         $ext  = strtolower($uploaded->getExtension());
-        $name = $base . '-' . Yii::$app->security->generateRandomString(8) . '.' . $ext;
+        $name = $base . '-' . \Yii::$app->security->generateRandomString(8) . '.' . $ext;
 
-        // Save to disk
-        $fsPath = $dir . DIRECTORY_SEPARATOR . $name;
-        if (!$uploaded->saveAs($fsPath)) {
+        if (!$uploaded->saveAs($dir . DIRECTORY_SEPARATOR . $name)) {
             $this->addError('file', 'Failed to save uploaded file.');
             return false;
         }
 
-        // Persist public URL to model's image attribute
-        $attr = $this->imageAttrName;      // e.g. 'image'
-        $this->$attr = '/' . trim($this->path, '/') . '/' . $name;  // e.g. /img/categories/abc123.webp
+        // Save public URL path into the image attribute
+        $attr = $this->imageAttrName; // e.g. 'image'
+        $this->$attr = '/' . trim($this->path, '/') . '/' . $name;
 
         return true;
     }
