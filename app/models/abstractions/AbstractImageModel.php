@@ -26,7 +26,7 @@ abstract class AbstractImageModel extends ActiveRecord {
     public function beforeSave($insert) {
         $file = UploadedFile::getInstance($this, 'file');
         if (!$file) {
-            $file = UploadedFile::getInstanceByName('file');
+            $file = parent::beforeSave($insert);
         }
         if ($file) {
             $imageAttrName = $this->imageAttrName;
