@@ -5,8 +5,8 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\db\BlogCategory */
 
-$this->title = 'Update Blog Category: ' . $model->title;
-$this->params['breadcrumbs'][] = ['label' => 'Blog Categories', 'url' => ['index']];
+$this->title = 'Update Blog Subcategory: ' . $model->title;
+$this->params['breadcrumbs'][] = ['label' => 'Blog Subcategories', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->title, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>

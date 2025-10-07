@@ -4,6 +4,7 @@
 /** @var $ogTags */
 /** @var $categorySlug */
 /** @var $orderBy */
+/** @var $subcategories */
 /** @var $categories */
 /** @var $title */
 /** @var $content */
@@ -11,9 +12,10 @@
 /** @var $models */
 /** @var $pagination */
 /** @var $currentCategory */
+/** @var $contextModel */
 
 echo $this->render('@app/views/components/page_meta', [
-    'model' => $currentCategory ?? $model,
+    'model' => $contextModel,
     'contentType' => 'article'
 ])
 
@@ -49,6 +51,15 @@ echo $this->render('@app/views/components/page_meta', [
                     'categories' => $categories
                 ])
             ]) ?>
+
+            <?= $this->render('_subcategories', [
+                'subcategories'   => $subcategories,
+                'categorySlug'    => $categorySlug,
+                'subcategorySlug' => $subcategorySlug ?? '',
+                'orderBy'         => $orderBy,
+                'search'          => \Yii::$app->request->get('search', ''),
+            ]) ?>
+
             <?= $this->render('_grid', [
                 'models' => $models,
                 'pagination' => $pagination,

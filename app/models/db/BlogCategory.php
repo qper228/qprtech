@@ -45,6 +45,7 @@ class BlogCategory extends AbstractContentModel
         // Merge parent rules with legacy `label`
         return ArrayHelper::merge(parent::rules(), [
             [['label'], 'string', 'max' => 255],
+            [['contentBottom'], 'string'],
             // If you still want DB-level uniqueness on slug, keep it at DB.
             // You can also add a 'unique' validator here if desired.
         ]);
@@ -100,4 +101,30 @@ class BlogCategory extends AbstractContentModel
     {
         return ArrayHelper::map(self::find()->asArray()->all(), 'id', 'label');
     }
+
+    // app/models/db/BlogCategory.php
+    public function getPosts()
+    {
+        return $this->hasMany(Post::class, ['categoryId' => 'id'])
+            ->inverseOf('category');
+    }
+
+    public function getSubcategories()
+    {
+        return $this->hasMany(BlogSubcategory::class, ['categoryId' => 'id'])
+            ->orderBy(['orderNumber' => SORT_ASC, 'title' => SORT_ASC]);
+    }
+
+    /**
+     * Convenience: array for forms / TOC.
+     */
+    public function getSubcategoryList(): array
+    {
+        return \yii\helpers\ArrayHelper::map(
+            $this->getSubcategories()->select(['id','title'])->asArray()->all(),
+            'id', 'title'
+        );
+    }
+
+
 }

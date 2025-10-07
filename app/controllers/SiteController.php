@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\db\BlogCategory;
+use app\models\db\BlogSubcategory;
 use app\models\db\Language;
 use app\models\db\Page;
 use app\models\db\Post;
@@ -126,51 +127,84 @@ class SiteController extends Controller {
         return $this->render('home/index', $context);
     }
 
-    public function actionBlog($category='', $search = '', $orderBy='createdAt') {
+    // Controller
+    public function actionBlog($category = '', $subcategory = '', $search = '', $orderBy = 'createdAt')
+    {
         $query = Post::find()->orderBy([$orderBy => SORT_DESC]);
+
         $currentCategory = null;
+        $currentSubcategory = null;
+
+        // Category filter
         if ($category) {
             $currentCategory = BlogCategory::findOne(['slug' => $category]);
-            $query
-                ->joinWith('category')
-                ->andFilterWhere(['bc.slug' => $category]);
+            $query->joinWith('category')            // Post::getCategory() uses alias('bc')
+            ->andFilterWhere(['bc.slug' => $category]);
         }
+
+        // Subcategory filter
+        if ($subcategory) {
+            // resolve subcategory (prefer within selected category)
+            $subQ = BlogSubcategory::find()->alias('sc')->where(['sc.slug' => $subcategory]);
+            if ($currentCategory) {
+                $subQ->andWhere(['sc.categoryId' => $currentCategory->id]);
+            }
+            $currentSubcategory = $subQ->one();
+
+            // join + filter posts
+            $query->joinWith(['subcategory sc'])->andWhere(['sc.slug' => $subcategory]);
+            // if no category provided but subcategory exists, set currentCategory
+            if (!$currentCategory && $currentSubcategory) {
+                $currentCategory = $currentSubcategory->category;
+            }
+        }
+
+        // Search
         if ($search) {
             $query->andWhere(['or',
                 ['like', 'title', $search],
                 ['like', 'content', $search],
             ]);
         }
+
         $dataProvider = new ActiveDataProvider([
-            'query' => $query,
+            'query' => $query->with(['subcategory.category','language']),
             'pagination' => [
                 'pageSize' => 15,
                 'forcePageParam' => false,
                 'pageSizeParam' => false,
             ],
         ]);
-        $pagination = $dataProvider->pagination;
-        $models = $dataProvider->getModels();
 
+        // Page/category/subcategory context to drive header text/SEO copy
         $page = Page::findOne(['isBlogPage' => true]);
-        $categories = BlogCategory::find()->orderBy('orderNumber')->all();
+        $contextModel = $currentSubcategory ?? $currentCategory ?? $page;
+
+        $categories     = BlogCategory::find()->orderBy('orderNumber')->all();
+        $subcategories  = $currentCategory ? $currentCategory->subcategories : [];
+
         $context = array_merge(
-            $this->getPageContext($currentCategory ?? $page),
+            $this->getPageContext($contextModel), // fills 'content', 'contentBottom', titles, scripts
             [
-                'models' => $models,
-                'categories' => $categories,
-                'pagination' => $pagination,
-                'categorySlug' => $category,
-                'orderBy' => $orderBy,
-                'model' => $page,
-                'currentCategory' => $currentCategory
+                'models'           => $dataProvider->getModels(),
+                'pagination'       => $dataProvider->pagination,
+                'categories'       => $categories,
+                'subcategories'    => $subcategories,
+                'categorySlug'     => $category,
+                'subcategorySlug'  => $subcategory,
+                'orderBy'          => $orderBy,
+                'model'            => $page,
+                'currentCategory'  => $currentCategory,
+                'contextModel'     => $contextModel,
             ]
         );
-        if (Yii::$app->request->isPjax) {
+
+        if (\Yii::$app->request->isPjax) {
             return $this->renderPartial('blog/index', $context);
         }
         return $this->render('blog/index', $context);
     }
+
 
     public function actionLogin()
     {

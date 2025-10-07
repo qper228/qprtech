@@ -52,6 +52,7 @@ $config = [
             'rules' => [
                 '' => 'site/index',
                 'sitemap.xml' => 'sitemap/index',
+                'blog/<category>/<subcategory>' => 'site/blog',
                 'blog/<category>' => 'site/blog',
                 'blog' => 'site/blog',
                 'contact' => 'site/contact',

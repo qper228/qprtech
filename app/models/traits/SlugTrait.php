@@ -9,7 +9,7 @@ trait SlugTrait
     abstract protected function getSlugAttribute();
     public function beforeSave($insert)
     {
-        if ($this->isNewRecord && empty($this->slug)) {
+        if (empty($this->slug) || $this->slug === 'NULL') {
             $slugger = new Slugger();
             $attr = $this->getSlugAttribute();
             $baseSlug = $slugger->slugify($this->$attr);

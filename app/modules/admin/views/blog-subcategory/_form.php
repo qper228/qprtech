@@ -1,9 +1,11 @@
 <?php
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use app\models\db\BlogCategory;
+use app\models\db\Language;
 
 /* @var $this yii\web\View */
-/* @var $model \app\models\db\BlogCategory */
+/* @var $model \app\models\db\BlogSubcategory */
 
 $form = ActiveForm::begin();
 ?>
@@ -19,6 +21,11 @@ $form = ActiveForm::begin();
             $out .= $form->field($model, 'contentBottom')->widget(\kartik\editors\Summernote::class, [
                 'pluginOptions' => ['disableHtmlSanitizer' => true],
             ]);
+            return $out;
+        },
+        'sideFields' => function($form, $model) {
+            $out = '';
+            $out .= $form->field($model, 'categoryId')->dropDownList(BlogCategory::getList());
             return $out;
         },
     ]);

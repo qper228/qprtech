@@ -33,6 +33,7 @@ abstract class AbstractAdminController extends Controller
                     'class' => VerbFilter::className(),
                     'actions' => [
                         'delete' => ['POST'],
+                        'options' => ['GET'],
                     ],
                 ],
             ],

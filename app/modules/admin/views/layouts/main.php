@@ -116,8 +116,9 @@ $adminUser = User::findOne(Yii::$app->user->id);
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                     <li class="nav-header">NAVIGATION</li>
                     <?= Components::navLi('ad', 'Ads', '/admin/ad') ?>
-                    <?= Components::navLi('blog', 'Blog', '/admin/post') ?>
+                    <?= Components::navLi('blog', 'Blog Posts', '/admin/post') ?>
                     <?= Components::navLi('list', 'Blog Categories', '/admin/blog-category') ?>
+                    <?= Components::navLi('list', 'Blog Subcategories', '/admin/blog-subcategory') ?>
                     <?= Components::navLi('at', 'Contacts', '/admin/contact/index', Contact::find()->count()) ?>
                     <?= Components::navLi('file-code', 'CSS', '/admin/default/css') ?>
                     <?= Components::navLi('file', 'Pages', '/admin/page') ?>
