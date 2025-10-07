@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\db\BlogCategory;
+use app\models\db\BlogSubcategory;
 use app\models\db\Page;
 use app\models\db\Post;
 use Yii;
@@ -39,12 +40,33 @@ class SitemapController extends Controller
             ];
         }
 
-        foreach (BlogCategory::find()->all() as $cat) {
+        // Categories (non-hidden) + their subcategories (non-hidden)
+        $categories = BlogCategory::find()->where(['isHidden' => false])->all();
+
+        foreach ($categories as $cat) {
+            // Category URL
             $urls[] = [
                 'loc' => Url::to(['site/blog', 'category' => $cat->slug], true),
                 'changefreq' => 'daily',
                 'priority' => 0.8,
             ];
+
+            // Subcategory URLs under this category
+            $subs = $cat->getSubcategories()
+                ->andWhere(['isHidden' => false])
+                ->all();
+
+            foreach ($subs as $sub) {
+                $urls[] = [
+                    'loc' => Url::to([
+                        'site/blog',
+                        'category'    => $cat->slug,
+                        'subcategory' => $sub->slug,
+                    ], true),
+                    'changefreq' => 'daily',
+                    'priority' => 0.75,
+                ];
+            }
         }
 
         // Blog posts
