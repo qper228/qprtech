@@ -9,7 +9,6 @@
 
 use kartik\editors\Codemirror;
 use kartik\editors\Summernote;
-use yii\helpers\Html;
 
 // Some models might not have these attributes; guard with property_exists()
 $hasAttr = fn($attr) => property_exists($model, $attr) || $model->canSetProperty($attr);
