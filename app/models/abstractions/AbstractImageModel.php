@@ -26,37 +26,39 @@ abstract class AbstractImageModel extends ActiveRecord {
 
     public function beforeSave($insert)
     {
-        if (!parent::beforeSave($insert)) {
-            return false;
-        }
+        if (!parent::beforeSave($insert)) return false;
 
-        // Prefer an explicitly attached file (controller), else model-scoped field (Post[file])
+        /** @var UploadedFile|null $uploaded */
         $uploaded = ($this->file instanceof UploadedFile)
             ? $this->file
             : UploadedFile::getInstance($this, 'file');
 
-        // Only proceed for a real successful upload
         if (!$uploaded || $uploaded->error !== UPLOAD_ERR_OK || (int)$uploaded->size === 0) {
             return true; // no upload for THIS model
         }
 
-        // Build absolute dir under webroot and ensure it exists
-        $dir = \Yii::getAlias('@webroot/' . trim($this->path, '/')); // e.g. web/img/posts
+        // 1) Build absolute target dir under @webroot + date subfolder
+        $basePath = \Yii::getAlias('@webroot/' . trim($this->path, '/')); // e.g. web/img/posts
+        $subdir   = date('Y/m');                                         // e.g. 2025/10
+        $dir      = $basePath . DIRECTORY_SEPARATOR . $subdir;
         FileHelper::createDirectory($dir, 0775, true);
 
-        // Unique, safe filename
-        $base = preg_replace('/[^a-z0-9_-]+/i', '-', pathinfo($uploaded->baseName, PATHINFO_FILENAME)) ?: 'image';
-        $ext  = strtolower($uploaded->getExtension());
-        $name = $base . '-' . \Yii::$app->security->generateRandomString(8) . '.' . $ext;
+        // 2) Generate safe, unique filename (ignore original "thumbnail.webp")
+        $ext   = strtolower($uploaded->getExtension());
+        $slug  = preg_replace('/[^a-z0-9_-]+/i', '-', pathinfo($uploaded->baseName, PATHINFO_FILENAME)) ?: 'image';
+        $uniq  = \Yii::$app->security->generateRandomString(8);
+        $stamp = gmdate('YmdHis');
+        $name  = strtolower("{$slug}-{$stamp}-{$uniq}.{$ext}");
 
-        if (!$uploaded->saveAs($dir . DIRECTORY_SEPARATOR . $name)) {
+        // 3) Save and set public URL path to model attribute
+        $fsPath = $dir . DIRECTORY_SEPARATOR . $name;
+        if (!$uploaded->saveAs($fsPath)) {
             $this->addError('file', 'Failed to save uploaded file.');
             return false;
         }
 
-        // Save public URL path into the image attribute
         $attr = $this->imageAttrName; // e.g. 'image'
-        $this->$attr = '/' . trim($this->path, '/') . '/' . $name;
+        $this->$attr = '/' . trim($this->path, '/') . '/' . $subdir . '/' . $name;
 
         return true;
     }
