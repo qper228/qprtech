@@ -19,7 +19,7 @@ use yii\helpers\Html;
     <?php foreach ($categories as $category) { ?>
         <li class="list-group-item <?= $category->slug === $categorySlug ? 'active' : '' ?>">
             <?= Html::a(
-                $category->label,
+                $category->title,
                 [
                     'site/blog',
                     'category' => $category->slug
