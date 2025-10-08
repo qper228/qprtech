@@ -23,22 +23,24 @@ $build = function($subSlug = null) use ($route, $categorySlug, $orderBy, $search
 };
 ?>
 
-<ul class="nav nav-pills flex-wrap mb-3">
-    <li class="nav-item">
-        <a class="nav-link rounded-pill <?= $subcategorySlug ? '' : 'active' ?>"
-           href="<?= Html::encode($build(null)) ?>" data-pjax="1">All</a>
-    </li>
-
-    <?php foreach ($subcategories as $s): ?>
-        <?php
-        $slug   = $s->slug ?: (string)$s->id;
-        $active = $subcategorySlug === $slug;
-        ?>
+<?php if (count($subcategories) > 0){ ?>
+    <ul class="nav nav-pills flex-wrap mb-3">
         <li class="nav-item">
-            <a class="nav-link rounded-pill <?= $active ? 'active' : '' ?>"
-               href="<?= Html::encode($build($slug)) ?>" data-pjax="1">
-                <?= Html::encode($s->shortTitle ?: $s->title) ?>
-            </a>
+            <a class="nav-link rounded-pill <?= $subcategorySlug ? '' : 'active' ?>"
+               href="<?= Html::encode($build(null)) ?>" data-pjax="1">All</a>
         </li>
-    <?php endforeach; ?>
-</ul>
+
+        <?php foreach ($subcategories as $s): ?>
+            <?php
+            $slug   = $s->slug ?: (string)$s->id;
+            $active = $subcategorySlug === $slug;
+            ?>
+            <li class="nav-item">
+                <a class="nav-link rounded-pill <?= $active ? 'active' : '' ?>"
+                   href="<?= Html::encode($build($slug)) ?>" data-pjax="1">
+                    <?= Html::encode($s->shortTitle ?: $s->title) ?>
+                </a>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+<?php } ?>
