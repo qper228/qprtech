@@ -106,6 +106,12 @@ class BlogSubcategory extends AbstractContentModel
         return ArrayHelper::map($rows, 'id', 'title');
     }
 
+    public static function getAll(): array
+    {
+        $rows = self::find()->asArray()->all();
+        return ArrayHelper::map($rows, 'id', 'title');
+    }
+
     public function getPosts()
     {
         return $this->hasMany(Post::class, ['subcategoryId' => 'id'])

@@ -1,6 +1,7 @@
 <?php
 
 use app\models\db\BlogCategory;
+use app\models\db\BlogSubcategory;
 use app\models\db\Language;
 use app\models\db\Post;
 use app\models\search\PostSearch;
@@ -47,10 +48,18 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'label' => 'Category',
                 'value' => function ($data) {
-                    return $data->category->label;
+                    return $data->category->title;
                 },
                 'attribute' => 'categoryId',
                 'filter' => BlogCategory::getList(),
+            ],
+            [
+                'label' => 'Subcategory',
+                'value' => function ($data) {
+                    return $data->subcategory->title;
+                },
+                'attribute' => 'subcategoryId',
+                'filter' => BlogSubcategory::getAll(),
             ],
             'isHidden:boolean',
             [
